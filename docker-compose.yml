@@ -12,15 +12,14 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_SECURITY_API_KEY_MAX_SECONDS_TO_LIVE=-1
+      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=myorg-llmplugin-app
     volumes:
-      - grafana-data:/var/lib/grafana
+      - ./grafana-storage:/var/lib/grafana
       - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - ./myorg-llmplugin-app/dist:/var/lib/grafana/plugins/myorg-llmplugin-app
 
   redis:
     image: redis:latest
     container_name: redis
     ports:
       - "6379:6379"
-
-volumes:
-  grafana-data:

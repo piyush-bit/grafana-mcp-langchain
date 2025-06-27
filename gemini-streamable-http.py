@@ -12,6 +12,7 @@ import redis
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import tzlocal
+from fastapi.middleware.cors import CORSMiddleware
 
 # Load environment variables
 load_dotenv()
@@ -114,6 +115,14 @@ class GrafanaMCPClient:
 
 # FastAPI app (rest remains the same)
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],          # <- allowed origins
+    allow_credentials=True,
+    allow_methods=["*"],            # <- allow all HTTP methods
+    allow_headers=["*"],            # <- allow all headers
+)
 
 @app.get("/")
 async def root():

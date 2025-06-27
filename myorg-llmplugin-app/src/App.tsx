@@ -10,6 +10,7 @@ interface Message {
 
 function App() {
   const [query, setQuery] = useState('');
+  const [uid, setUid] = useState<string | undefined>(undefined);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -32,7 +33,9 @@ function App() {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!query.trim()) { return; }
+    if (!query.trim()) {
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -46,13 +49,20 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8080/query', {
+      console.log("cahnges has been done !!");
+      
+      const body = uid ? { query: userMessage.content, uid } : { query: userMessage.content };
+      const res = await fetch('http://localhost:8020/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: userMessage.content }),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();
+
+      if (data.uid && !uid) {
+        setUid(data.uid);
+      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
